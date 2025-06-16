@@ -1,99 +1,63 @@
 
 import { useState } from 'react';
 import LessonCard from '@/components/LessonCard';
+import LessonPractice from '@/components/LessonPractice';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { lessonData, type LessonData } from '@/data/lessonData';
 
 const LessonsPage = () => {
   const { toast } = useToast();
+  const [selectedLesson, setSelectedLesson] = useState<LessonData | null>(null);
   
-  const [lessons] = useState([
-    {
-      id: 1,
-      title: "Home Row Fundamentals",
-      description: "Learn the foundation of touch typing with home row keys (ASDF JKL;)",
-      difficulty: 'Beginner' as const,
-      duration: "15 min",
-      accuracy: 95,
-      isCompleted: true
-    },
-    {
-      id: 2,
-      title: "Top Row Mastery",
-      description: "Master the top row keys (QWERTY UIOP) with proper finger placement",
-      difficulty: 'Beginner' as const,
-      duration: "20 min",
-      accuracy: 88,
-      isCompleted: true
-    },
-    {
-      id: 3,
-      title: "Bottom Row Training",
-      description: "Practice bottom row keys (ZXCVBNM) and build muscle memory",
-      difficulty: 'Intermediate' as const,
-      duration: "18 min",
-      accuracy: 82,
-      isCompleted: true
-    },
-    {
-      id: 4,
-      title: "Numbers & Special Characters",
-      description: "Learn to type numbers and special characters efficiently",
-      difficulty: 'Intermediate' as const,
-      duration: "25 min",
-      accuracy: 0,
-      isCompleted: false
-    },
-    {
-      id: 5,
-      title: "Common Word Patterns",
-      description: "Practice typing common English word patterns and combinations",
-      difficulty: 'Intermediate' as const,
-      duration: "30 min",
-      accuracy: 0,
-      isCompleted: false
-    },
-    {
-      id: 6,
-      title: "Advanced Punctuation",
-      description: "Master complex punctuation and symbol combinations",
-      difficulty: 'Advanced' as const,
-      duration: "35 min",
-      accuracy: 0,
-      isCompleted: false
-    },
-    {
-      id: 7,
-      title: "Speed Building Drills",
-      description: "Intensive drills to increase your typing speed significantly",
-      difficulty: 'Advanced' as const,
-      duration: "40 min",
-      accuracy: 0,
-      isCompleted: false
-    },
-    {
-      id: 8,
-      title: "Programming Syntax",
-      description: "Practice typing code syntax and programming-specific characters",
-      difficulty: 'Advanced' as const,
-      duration: "45 min",
-      accuracy: 0,
-      isCompleted: false
-    }
-  ]);
+  // Mock completed lessons state - in a real app this would come from a database
+  const [completedLessons, setCompletedLessons] = useState(new Set([1, 2, 3]));
+  const [lessonStats, setLessonStats] = useState<{[key: number]: {accuracy: number, wpm: number}}>({
+    1: { accuracy: 95, wpm: 18 },
+    2: { accuracy: 88, wpm: 22 },
+    3: { accuracy: 82, wpm: 26 }
+  });
 
   const handleStartLesson = (lessonId: number) => {
-    const lesson = lessons.find(l => l.id === lessonId);
-    toast({
-      title: "Starting Lesson",
-      description: `Beginning "${lesson?.title}" - Get ready to practice!`,
-    });
-    // TODO: Navigate to specific lesson practice
+    const lesson = lessonData.find(l => l.id === lessonId);
+    if (lesson) {
+      setSelectedLesson(lesson);
+    }
   };
 
-  const completedLessons = lessons.filter(lesson => lesson.isCompleted).length;
-  const progressPercentage = (completedLessons / lessons.length) * 100;
+  const handleLessonComplete = (lessonId: number, stats: { wpm: number; accuracy: number; timeElapsed: number }) => {
+    setCompletedLessons(prev => new Set([...prev, lessonId]));
+    setLessonStats(prev => ({
+      ...prev,
+      [lessonId]: { accuracy: stats.accuracy, wpm: stats.wpm }
+    }));
+    
+    toast({
+      title: "Lesson Completed!",
+      description: `Great job! WPM: ${stats.wpm}, Accuracy: ${stats.accuracy}%`,
+    });
+    
+    setSelectedLesson(null);
+  };
+
+  const handleBackToLessons = () => {
+    setSelectedLesson(null);
+  };
+
+  // If a lesson is selected, show the practice component
+  if (selectedLesson) {
+    return (
+      <LessonPractice
+        lesson={selectedLesson}
+        onComplete={(stats) => handleLessonComplete(selectedLesson.id, stats)}
+        onBack={handleBackToLessons}
+      />
+    );
+  }
+
+  const completedCount = completedLessons.size;
+  const progressPercentage = (completedCount / lessonData.length) * 100;
 
   return (
     <div className="space-y-8">
@@ -113,7 +77,7 @@ const LessonsPage = () => {
           <CardTitle className="text-white flex items-center justify-between">
             Course Progress
             <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
-              {completedLessons}/{lessons.length} Complete
+              {completedCount}/{lessonData.length} Complete
             </Badge>
           </CardTitle>
         </CardHeader>
@@ -135,18 +99,23 @@ const LessonsPage = () => {
 
       {/* Lessons Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {lessons.map((lesson) => (
-          <LessonCard
-            key={lesson.id}
-            title={lesson.title}
-            description={lesson.description}
-            difficulty={lesson.difficulty}
-            duration={lesson.duration}
-            accuracy={lesson.accuracy}
-            isCompleted={lesson.isCompleted}
-            onStart={() => handleStartLesson(lesson.id)}
-          />
-        ))}
+        {lessonData.map((lesson) => {
+          const isCompleted = completedLessons.has(lesson.id);
+          const stats = lessonStats[lesson.id];
+          
+          return (
+            <LessonCard
+              key={lesson.id}
+              title={lesson.title}
+              description={lesson.description}
+              difficulty={lesson.difficulty}
+              duration={lesson.duration}
+              accuracy={stats?.accuracy || 0}
+              isCompleted={isCompleted}
+              onStart={() => handleStartLesson(lesson.id)}
+            />
+          );
+        })}
       </div>
 
       {/* Tips Section */}

@@ -1,7 +1,7 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import InteractiveKeyboard from './InteractiveKeyboard';
 import { Play, RotateCcw, Clock, Target, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -21,6 +21,8 @@ const TypingTest = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState(0);
+  const [correctKeys, setCorrectKeys] = useState(new Set<string>());
+  const [incorrectKeys, setIncorrectKeys] = useState(new Set<string>());
   const [stats, setStats] = useState<TypingStats>({
     wpm: 0,
     accuracy: 100,
@@ -87,6 +89,24 @@ const TypingTest = () => {
     setUserInput(value);
     setCurrentIndex(value.length);
 
+    // Update correct/incorrect keys for keyboard highlighting
+    const newCorrectKeys = new Set<string>();
+    const newIncorrectKeys = new Set<string>();
+
+    for (let i = 0; i < value.length; i++) {
+      const inputChar = value[i];
+      const targetChar = text[i];
+      
+      if (inputChar === targetChar) {
+        newCorrectKeys.add(inputChar.toLowerCase());
+      } else {
+        newIncorrectKeys.add(targetChar.toLowerCase());
+      }
+    }
+
+    setCorrectKeys(newCorrectKeys);
+    setIncorrectKeys(newIncorrectKeys);
+
     if (value.length >= text.length) {
       setIsActive(false);
       toast({
@@ -101,6 +121,8 @@ const TypingTest = () => {
     setCurrentIndex(0);
     setIsActive(false);
     setTimeElapsed(0);
+    setCorrectKeys(new Set());
+    setIncorrectKeys(new Set());
     setStats({
       wpm: 0,
       accuracy: 100,
@@ -115,6 +137,13 @@ const TypingTest = () => {
   const startTest = () => {
     resetTest();
     inputRef.current?.focus();
+  };
+
+  const getCurrentKey = () => {
+    if (currentIndex < text.length) {
+      return text[currentIndex].toLowerCase();
+    }
+    return undefined;
   };
 
   const renderText = () => {
@@ -222,6 +251,17 @@ const TypingTest = () => {
           />
         </CardContent>
       </Card>
+
+      {/* Interactive Keyboard */}
+      <div>
+        <h3 className="text-white text-lg font-semibold mb-4">Keyboard Guide</h3>
+        <InteractiveKeyboard
+          currentKey={getCurrentKey()}
+          correctKeys={correctKeys}
+          incorrectKeys={incorrectKeys}
+          showFingerGuide={true}
+        />
+      </div>
     </div>
   );
 };
