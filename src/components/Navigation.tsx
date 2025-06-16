@@ -19,16 +19,16 @@ const Navigation = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="bg-gray-900/95 backdrop-blur-sm border-b border-gray-700/50 sticky top-0 z-50">
+    <nav className="bg-black/98 backdrop-blur-sm border-b border-gray-800/50 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">ST</span>
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">ZT</span>
               </div>
-              <span className="text-white font-bold text-xl">SwiftType</span>
+              <span className="text-white font-bold text-xl">Zeos Type</span>
             </Link>
           </div>
 
@@ -40,8 +40,8 @@ const Navigation = () => {
                   variant={isActive(item.path) ? "default" : "ghost"}
                   className={`flex items-center space-x-2 ${
                     isActive(item.path)
-                      ? 'bg-blue-600 hover:bg-blue-700'
-                      : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                      ? 'bg-blue-500 hover:bg-blue-600'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-900'
                   }`}
                 >
                   <item.icon className="w-4 h-4" />
@@ -57,7 +57,7 @@ const Navigation = () => {
               variant="ghost"
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-gray-300 hover:text-white"
+              className="text-gray-300 hover:text-white hover:bg-gray-900"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </Button>
@@ -66,7 +66,7 @@ const Navigation = () => {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-700/50">
+          <div className="md:hidden border-t border-gray-800/50">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navItems.map((item) => (
                 <Link
@@ -78,8 +78,8 @@ const Navigation = () => {
                     variant={isActive(item.path) ? "default" : "ghost"}
                     className={`w-full justify-start space-x-2 ${
                       isActive(item.path)
-                        ? 'bg-blue-600 hover:bg-blue-700'
-                        : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                        ? 'bg-blue-500 hover:bg-blue-600'
+                        : 'text-gray-300 hover:text-white hover:bg-gray-900'
                     }`}
                   >
                     <item.icon className="w-4 h-4" />

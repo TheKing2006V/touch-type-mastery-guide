@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -157,7 +158,7 @@ const TypingTest = () => {
       } else if (index === currentIndex) {
         className += 'text-white bg-blue-500 animate-pulse';
       } else {
-        className += 'text-gray-400';
+        className += 'text-gray-500';
       }
 
       return (
@@ -172,7 +173,7 @@ const TypingTest = () => {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-gray-950/80 border-gray-800">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
               <Zap className="w-5 h-5 text-yellow-400" />
@@ -184,7 +185,7 @@ const TypingTest = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-gray-950/80 border-gray-800">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
               <Target className="w-5 h-5 text-green-400" />
@@ -196,7 +197,7 @@ const TypingTest = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-gray-950/80 border-gray-800">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
               <Clock className="w-5 h-5 text-blue-400" />
@@ -210,14 +211,14 @@ const TypingTest = () => {
       </div>
 
       {/* Typing Area */}
-      <Card className="bg-gray-800/50 border-gray-700">
+      <Card className="bg-gray-950/80 border-gray-800">
         <CardHeader>
           <CardTitle className="text-white flex items-center justify-between">
             Typing Test
             <div className="space-x-2">
               <Button
                 onClick={startTest}
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-blue-500 hover:bg-blue-600"
                 size="sm"
               >
                 <Play className="w-4 h-4 mr-2" />
@@ -226,7 +227,7 @@ const TypingTest = () => {
               <Button
                 onClick={resetTest}
                 variant="outline"
-                className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                className="border-gray-600 text-gray-300 hover:bg-gray-900 hover:text-white"
                 size="sm"
               >
                 <RotateCcw className="w-4 h-4 mr-2" />
@@ -236,7 +237,7 @@ const TypingTest = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="p-6 bg-gray-900/50 rounded-lg border border-gray-600 min-h-[120px] font-mono leading-relaxed">
+          <div className="p-6 bg-black/80 rounded-lg border border-gray-700 min-h-[120px] font-mono leading-relaxed">
             {renderText()}
           </div>
           
@@ -245,7 +246,7 @@ const TypingTest = () => {
             type="text"
             value={userInput}
             onChange={handleInputChange}
-            className="w-full p-4 bg-gray-900/50 border border-gray-600 rounded-lg text-white font-mono text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full p-4 bg-black/80 border border-gray-700 rounded-lg text-white font-mono text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Start typing to begin the test..."
             disabled={userInput.length >= text.length}
           />

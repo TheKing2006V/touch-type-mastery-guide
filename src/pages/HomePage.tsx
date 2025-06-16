@@ -12,19 +12,19 @@ const HomePage = () => {
       {/* Hero Section */}
       <div className="text-center space-y-4 py-12">
         <h1 className="text-4xl md:text-6xl font-bold text-white">
-          Master <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">Touch Typing</span>
+          Master <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Touch Typing</span>
         </h1>
-        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+        <p className="text-xl text-gray-300 max-w-2xl mx-auto">
           Improve your typing speed and accuracy with our comprehensive lessons and real-time feedback.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
           <Link to="/lessons">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+            <Button size="lg" className="bg-blue-500 hover:bg-blue-600">
               <BookOpen className="w-5 h-5 mr-2" />
               Start Learning
             </Button>
           </Link>
-          <Button size="lg" variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700">
+          <Button size="lg" variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-900 hover:text-white">
             <Trophy className="w-5 h-5 mr-2" />
             View Achievements
           </Button>
@@ -33,7 +33,7 @@ const HomePage = () => {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-gray-950/80 border-gray-800">
           <CardContent className="p-4 text-center">
             <TrendingUp className="w-8 h-8 text-blue-400 mx-auto mb-2" />
             <p className="text-2xl font-bold text-white">45</p>
@@ -41,7 +41,7 @@ const HomePage = () => {
           </CardContent>
         </Card>
         
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-gray-950/80 border-gray-800">
           <CardContent className="p-4 text-center">
             <Target className="w-8 h-8 text-green-400 mx-auto mb-2" />
             <p className="text-2xl font-bold text-white">92%</p>
@@ -49,7 +49,7 @@ const HomePage = () => {
           </CardContent>
         </Card>
         
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-gray-950/80 border-gray-800">
           <CardContent className="p-4 text-center">
             <BookOpen className="w-8 h-8 text-purple-400 mx-auto mb-2" />
             <p className="text-2xl font-bold text-white">8/12</p>
@@ -57,7 +57,7 @@ const HomePage = () => {
           </CardContent>
         </Card>
         
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-gray-950/80 border-gray-800">
           <CardContent className="p-4 text-center">
             <Trophy className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
             <p className="text-2xl font-bold text-white">5</p>
@@ -67,7 +67,7 @@ const HomePage = () => {
       </div>
 
       {/* Progress Overview */}
-      <Card className="bg-gray-800/50 border-gray-700">
+      <Card className="bg-gray-950/80 border-gray-800">
         <CardHeader>
           <CardTitle className="text-white">Your Progress</CardTitle>
         </CardHeader>

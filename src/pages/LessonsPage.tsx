@@ -66,13 +66,13 @@ const LessonsPage = () => {
         <h1 className="text-3xl md:text-4xl font-bold text-white">
           Typing Lessons
         </h1>
-        <p className="text-gray-400 max-w-2xl mx-auto">
+        <p className="text-gray-300 max-w-2xl mx-auto">
           Follow our structured curriculum to master touch typing step by step.
         </p>
       </div>
 
       {/* Progress Overview */}
-      <Card className="bg-gray-800/50 border-gray-700">
+      <Card className="bg-gray-950/80 border-gray-800">
         <CardHeader>
           <CardTitle className="text-white flex items-center justify-between">
             Course Progress
@@ -87,9 +87,9 @@ const LessonsPage = () => {
               <span className="text-gray-400">Overall Progress</span>
               <span className="text-white">{Math.round(progressPercentage)}%</span>
             </div>
-            <div className="w-full bg-gray-700 rounded-full h-2">
+            <div className="w-full bg-gray-800 rounded-full h-2">
               <div 
-                className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-blue-400 to-purple-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${progressPercentage}%` }}
               ></div>
             </div>
@@ -119,7 +119,7 @@ const LessonsPage = () => {
       </div>
 
       {/* Tips Section */}
-      <Card className="bg-gray-800/50 border-gray-700">
+      <Card className="bg-gray-950/80 border-gray-800">
         <CardHeader>
           <CardTitle className="text-white">Learning Tips</CardTitle>
         </CardHeader>
@@ -127,19 +127,19 @@ const LessonsPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <h4 className="text-white font-semibold">Focus on Accuracy First</h4>
-              <p className="text-gray-400 text-sm">Speed will naturally increase as you build muscle memory with correct finger placement.</p>
+              <p className="text-gray-300 text-sm">Speed will naturally increase as you build muscle memory with correct finger placement.</p>
             </div>
             <div className="space-y-2">
               <h4 className="text-white font-semibold">Practice Regularly</h4>
-              <p className="text-gray-400 text-sm">Consistent daily practice for 15-30 minutes is more effective than longer, infrequent sessions.</p>
+              <p className="text-gray-300 text-sm">Consistent daily practice for 15-30 minutes is more effective than longer, infrequent sessions.</p>
             </div>
             <div className="space-y-2">
               <h4 className="text-white font-semibold">Proper Posture</h4>
-              <p className="text-gray-400 text-sm">Sit up straight, keep your wrists floating, and maintain a comfortable distance from the screen.</p>
+              <p className="text-gray-300 text-sm">Sit up straight, keep your wrists floating, and maintain a comfortable distance from the screen.</p>
             </div>
             <div className="space-y-2">
               <h4 className="text-white font-semibold">Don't Look Down</h4>
-              <p className="text-gray-400 text-sm">Resist the urge to look at the keyboard. Trust the lessons and build that muscle memory!</p>
+              <p className="text-gray-300 text-sm">Resist the urge to look at the keyboard. Trust the lessons and build that muscle memory!</p>
             </div>
           </div>
         </CardContent>
