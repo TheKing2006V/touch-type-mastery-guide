@@ -33,11 +33,14 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
       let result;
       if (isSignUp) {
         result = await signUp(email, password, username);
+        console.log('Sign up result:', result);
       } else {
         result = await signIn(email, password);
+        console.log('Sign in result:', result);
       }
 
       if (result.error) {
+        console.error('Auth error:', result.error);
         toast({
           title: 'Error',
           description: result.error.message,
@@ -46,15 +49,18 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
       } else {
         toast({
           title: 'Success',
-          description: isSignUp ? 'Account created successfully!' : 'Signed in successfully!'
+          description: isSignUp ? 'Please check your email to confirm your account!' : 'Signed in successfully!'
         });
-        onClose();
-        resetForm();
+        if (!isSignUp) {
+          onClose();
+          resetForm();
+        }
       }
     } catch (error: any) {
+      console.error('Auth exception:', error);
       toast({
         title: 'Error',
-        description: error.message,
+        description: error.message || 'An unexpected error occurred',
         variant: 'destructive'
       });
     } finally {
@@ -73,23 +79,37 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
         result = await signInWithGitHub();
       }
 
+      console.log(`${provider} auth result:`, result);
+
       if (result.error) {
-        toast({
-          title: 'Error',
-          description: result.error.message,
-          variant: 'destructive'
-        });
+        console.error(`${provider} auth error:`, result.error);
+        
+        // Handle specific provider errors
+        if (result.error.message.includes('provider is not enabled')) {
+          toast({
+            title: 'Provider Not Available',
+            description: `${provider === 'google' ? 'Google' : 'GitHub'} sign-in is not currently enabled. Please use email/password or contact support.`,
+            variant: 'destructive'
+          });
+        } else {
+          toast({
+            title: 'Error',
+            description: result.error.message,
+            variant: 'destructive'
+          });
+        }
       } else {
         toast({
           title: 'Success',
           description: `Signing in with ${provider}...`
         });
-        onClose();
+        // Don't close modal immediately for OAuth as redirect will handle it
       }
     } catch (error: any) {
+      console.error(`${provider} auth exception:`, error);
       toast({
         title: 'Error',
-        description: error.message,
+        description: error.message || 'An unexpected error occurred',
         variant: 'destructive'
       });
     } finally {
@@ -118,11 +138,18 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
         </DialogHeader>
 
         <div className="space-y-4">
+          {/* Note about OAuth providers */}
+          <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-3">
+            <p className="text-blue-300 text-xs text-center">
+              Note: Social login providers need to be configured in Supabase settings
+            </p>
+          </div>
+
           {/* Social Authentication */}
           <div className="space-y-2">
             <Button
               onClick={() => handleSocialAuth('google')}
-              disabled={socialLoading !== null}
+              disabled={socialLoading !== null || loading}
               className="w-full bg-white hover:bg-gray-100 text-gray-900 border"
               variant="outline"
             >
@@ -137,7 +164,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
             
             <Button
               onClick={() => handleSocialAuth('github')}
-              disabled={socialLoading !== null}
+              disabled={socialLoading !== null || loading}
               className="w-full bg-gray-800 hover:bg-gray-700 text-white"
             >
               <Github className="w-4 h-4 mr-2" />
@@ -158,7 +185,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {isSignUp && (
               <div>
-                <Label htmlFor="username" className="text-gray-300">Username</Label>
+                <Label htmlFor="username" className="text-gray-300">Username (Optional)</Label>
                 <Input
                   id="username"
                   type="text"
@@ -193,6 +220,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                 className="bg-gray-800 border-gray-600 text-white"
                 placeholder="Enter your password"
                 required
+                minLength={6}
               />
             </div>
 

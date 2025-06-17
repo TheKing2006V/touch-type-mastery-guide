@@ -23,7 +23,12 @@ const Navigation = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const handleSignOut = async () => {
-    await signOut();
+    try {
+      await signOut();
+      console.log('User signed out successfully');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   if (loading) {
@@ -61,9 +66,9 @@ const Navigation = () => {
               </Link>
             </div>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Navigation - Always show navigation items */}
             <div className="hidden md:flex items-center space-x-1">
-              {user && navItems.map((item) => (
+              {navItems.map((item) => (
                 <Link key={item.path} to={item.path}>
                   <Button
                     variant={isActive(item.path) ? "default" : "ghost"}
@@ -111,11 +116,11 @@ const Navigation = () => {
             </div>
           </div>
 
-          {/* Mobile Navigation */}
+          {/* Mobile Navigation - Always show navigation items */}
           {isMobileMenuOpen && (
             <div className="md:hidden border-t border-gray-800/50">
               <div className="px-2 pt-2 pb-3 space-y-1">
-                {user && navItems.map((item) => (
+                {navItems.map((item) => (
                   <Link
                     key={item.path}
                     to={item.path}
