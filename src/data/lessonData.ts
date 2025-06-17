@@ -1,4 +1,3 @@
-
 export interface LessonData {
   id: number;
   title: string;
@@ -108,12 +107,12 @@ export const lessonData: LessonData[] = [
       {
         instruction: "Learn common special characters and punctuation marks.",
         text: "! @ # $ % ^ & * ( ) - _ = + [ ] { } \\ | ; : ' \" , . < > / ?",
-        focusKeys: ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')']
+        focusKeys: ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '[', ']', '{', '}', '\\', '|', ';', ':', "'", '"', ',', '.', '<', '>', '/', '?']
       },
       {
         instruction: "Practice typing addresses, phone numbers, and mixed content.",
         text: "Call (555) 123-4567 or email user@example.com for info. Price: $29.99!",
-        focusKeys: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+        focusKeys: ['(', ')', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '@', '.', '$', '!']
       }
     ],
     targetAccuracy: 85,
@@ -134,12 +133,12 @@ export const lessonData: LessonData[] = [
       {
         instruction: "Type common prefixes and suffixes to build speed.",
         text: "pre- pro- re- un- -ing -ed -er -est -ly -tion -ness -ment -ful -less",
-        focusKeys: []
+        focusKeys: ['-']
       },
       {
         instruction: "Practice full sentences with common word patterns.",
         text: "The quick brown fox jumps over the lazy dog. She sells seashells by the seashore.",
-        focusKeys: []
+        focusKeys: ['.']
       }
     ],
     targetAccuracy: 85,
@@ -160,12 +159,12 @@ export const lessonData: LessonData[] = [
       {
         instruction: "Master technical symbols and mathematical expressions.",
         text: "x² + y² = z²; f(x) = 2x + 1; if (x > 5) { return x * 2; } else { return x / 2; }",
-        focusKeys: ['+', '=', '(', ')', '{', '}', '*', '/', '<', '>']
+        focusKeys: ['+', '=', '(', ')', '{', '}', '*', '/', '<', '>', ';']
       },
       {
         instruction: "Type complex sentences with mixed punctuation.",
         text: "The CEO said, \"Our Q3 results (up 15.7%) exceeded expectations!\" What's next?",
-        focusKeys: ['"', "'", '(', ')', '!', '?', ',', '.']
+        focusKeys: ['"', "'", '(', ')', '!', '?', ',', '.', '%']
       }
     ],
     targetAccuracy: 82,
@@ -205,19 +204,19 @@ export const lessonData: LessonData[] = [
     duration: "45 min",
     exercises: [
       {
-        instruction: "Practice common programming symbols and brackets.",
+        instruction: "Practice common programming symbols and brackets. Use Shift+[ for {, Shift+] for }, Shift+9 for (, Shift+0 for ), etc.",
         text: "{ } [ ] ( ) < > && || != == <= >= ++ -- += -= *= /= %= -> => :: ??",
-        focusKeys: ['{', '}', '[', ']', '(', ')', '<', '>', '&', '|', '!', '=']
+        focusKeys: ['{', '}', '[', ']', '(', ')', '<', '>', '&', '|', '!', '=', '+', '-', '*', '/', '%', '>', ':', '?']
       },
       {
-        instruction: "Type function definitions and variable declarations.",
+        instruction: "Type function definitions and variable declarations. Focus on parentheses, braces, and semicolons.",
         text: "function calculateSum(a, b) { return a + b; } const result = calculateSum(10, 20);",
-        focusKeys: []
+        focusKeys: ['(', ')', '{', '}', ',', ';', '=', '+']
       },
       {
-        instruction: "Practice complete code blocks with proper syntax.",
+        instruction: "Practice complete code blocks with proper syntax. Pay attention to quotes, dots, and slashes.",
         text: "if (user.isAuthenticated()) { console.log('Welcome back!'); } else { window.location.href = '/login'; }",
-        focusKeys: []
+        focusKeys: ['(', ')', '{', '}', '.', "'", '"', '!', ';', '/', '=']
       }
     ],
     targetAccuracy: 78,
