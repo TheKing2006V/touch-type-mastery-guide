@@ -9,7 +9,170 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      achievements: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string
+          icon: string
+          id: string
+          name: string
+          points: number | null
+          requirement_type: string
+          requirement_value: number
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description: string
+          icon: string
+          id?: string
+          name: string
+          points?: number | null
+          requirement_type: string
+          requirement_value: number
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          points?: number | null
+          requirement_type?: string
+          requirement_value?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          id: string
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string | null
+          earned_at: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          achievement_id?: string | null
+          earned_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          achievement_id?: string | null
+          earned_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_progress: {
+        Row: {
+          attempts: number | null
+          best_accuracy: number | null
+          best_wpm: number | null
+          completed: boolean | null
+          first_completed_at: string | null
+          id: string
+          last_attempted_at: string | null
+          lesson_id: number
+          user_id: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          best_accuracy?: number | null
+          best_wpm?: number | null
+          completed?: boolean | null
+          first_completed_at?: string | null
+          id?: string
+          last_attempted_at?: string | null
+          lesson_id: number
+          user_id?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          best_accuracy?: number | null
+          best_wpm?: number | null
+          completed?: boolean | null
+          first_completed_at?: string | null
+          id?: string
+          last_attempted_at?: string | null
+          lesson_id?: number
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_stats: {
+        Row: {
+          average_accuracy: number | null
+          average_wpm: number | null
+          created_at: string | null
+          current_level: number | null
+          experience_points: number | null
+          id: string
+          total_characters_typed: number | null
+          total_lessons_completed: number | null
+          total_typing_time: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          average_accuracy?: number | null
+          average_wpm?: number | null
+          created_at?: string | null
+          current_level?: number | null
+          experience_points?: number | null
+          id?: string
+          total_characters_typed?: number | null
+          total_lessons_completed?: number | null
+          total_typing_time?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          average_accuracy?: number | null
+          average_wpm?: number | null
+          created_at?: string | null
+          current_level?: number | null
+          experience_points?: number | null
+          id?: string
+          total_characters_typed?: number | null
+          total_lessons_completed?: number | null
+          total_typing_time?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
