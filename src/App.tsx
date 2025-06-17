@@ -10,32 +10,42 @@ import HomePage from "./pages/HomePage";
 import LessonsPage from "./pages/LessonsPage";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+// Create QueryClient with proper configuration
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <div className="min-h-screen bg-black">
-            <Navigation />
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/lessons" element={<LessonsPage />} />
-                <Route path="/achievements" element={<div className="text-white text-center py-12">Achievements page coming soon!</div>} />
-                <Route path="/profile" element={<div className="text-white text-center py-12">Profile page coming soon!</div>} />
-                <Route path="/settings" element={<div className="text-white text-center py-12">Settings page coming soon!</div>} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </main>
-          </div>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <div className="min-h-screen bg-black">
+              <Navigation />
+              <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/lessons" element={<LessonsPage />} />
+                  <Route path="/achievements" element={<div className="text-white text-center py-12">Achievements page coming soon!</div>} />
+                  <Route path="/profile" element={<div className="text-white text-center py-12">Profile page coming soon!</div>} />
+                  <Route path="/settings" element={<div className="text-white text-center py-12">Settings page coming soon!</div>} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
+            </div>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
