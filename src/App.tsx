@@ -8,6 +8,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Navigation from "./components/Navigation";
 import HomePage from "./pages/HomePage";
 import LessonsPage from "./pages/LessonsPage";
+import ProfilePage from "./pages/ProfilePage";
+import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
 
 // Create QueryClient with proper configuration
@@ -35,8 +37,8 @@ const App = () => {
                   <Route path="/" element={<HomePage />} />
                   <Route path="/lessons" element={<LessonsPage />} />
                   <Route path="/achievements" element={<div className="text-white text-center py-12">Achievements page coming soon!</div>} />
-                  <Route path="/profile" element={<div className="text-white text-center py-12">Profile page coming soon!</div>} />
-                  <Route path="/settings" element={<div className="text-white text-center py-12">Settings page coming soon!</div>} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/settings" element={<SettingsPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>

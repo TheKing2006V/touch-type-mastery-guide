@@ -9,6 +9,8 @@ interface AuthContextType {
   loading: boolean;
   signUp: (email: string, password: string, username?: string) => Promise<any>;
   signIn: (email: string, password: string) => Promise<any>;
+  signInWithGoogle: () => Promise<any>;
+  signInWithGitHub: () => Promise<any>;
   signOut: () => Promise<any>;
 }
 
@@ -28,30 +30,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    // Listen for auth changes
+    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
+        console.log('Auth state changed:', event, session);
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
       }
     );
 
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session:', session);
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
     return () => subscription.unsubscribe();
   }, []);
 
   const signUp = async (email: string, password: string, username?: string) => {
+    const redirectUrl = `${window.location.origin}/`;
+    
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        emailRedirectTo: redirectUrl,
         data: {
           username: username || email.split('@')[0]
         }
@@ -68,6 +75,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return { data, error };
   };
 
+  const signInWithGoogle = async () => {
+    const redirectUrl = `${window.location.origin}/`;
+    
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: redirectUrl
+      }
+    });
+    return { data, error };
+  };
+
+  const signInWithGitHub = async () => {
+    const redirectUrl = `${window.location.origin}/`;
+    
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo: redirectUrl
+      }
+    });
+    return { data, error };
+  };
+
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     return { error };
@@ -79,6 +110,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loading,
     signUp,
     signIn,
+    signInWithGoogle,
+    signInWithGitHub,
     signOut
   };
 
