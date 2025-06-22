@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -100,4 +101,69 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Typing Animation Effects */
+@keyframes typing-flow {
+  0% { transform: translateY(0px); opacity: 1; }
+  50% { transform: translateY(-2px); opacity: 0.8; }
+  100% { transform: translateY(0px); opacity: 1; }
+}
+
+@keyframes slide-in-achievement {
+  0% { 
+    transform: translateX(100%); 
+    opacity: 0; 
+  }
+  100% { 
+    transform: translateX(0); 
+    opacity: 1; 
+  }
+}
+
+@keyframes bounce-in {
+  0% { 
+    transform: scale(0.3) rotate(-10deg); 
+    opacity: 0; 
+  }
+  50% { 
+    transform: scale(1.05) rotate(2deg); 
+  }
+  100% { 
+    transform: scale(1) rotate(0deg); 
+    opacity: 1; 
+  }
+}
+
+.character-correct {
+  animation: typing-flow 0.2s ease-out;
+  background: linear-gradient(45deg, #10b981, #059669);
+  color: white;
+  border-radius: 2px;
+  padding: 1px 2px;
+}
+
+.character-incorrect {
+  animation: typing-flow 0.2s ease-out;
+  background: linear-gradient(45deg, #ef4444, #dc2626);
+  color: white;
+  border-radius: 2px;
+  padding: 1px 2px;
+}
+
+.wpm-counter {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  color: white;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: bold;
+}
+
+.achievement-popup {
+  animation: slide-in-achievement 0.5s ease-out;
+}
+
+.achievement-badge {
+  animation: bounce-in 0.6s ease-out;
 }

@@ -1,10 +1,13 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import InteractiveKeyboard from './InteractiveKeyboard';
-import { Play, RotateCcw, Clock, Target, Zap } from 'lucide-react';
+import AchievementPopup from './AchievementPopup';
+import LocalAnalytics from './LocalAnalytics';
+import { Play, RotateCcw, Clock, Target, Zap, BarChart3 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAchievements } from '@/hooks/useAchievements';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 interface TypingStats {
   wpm: number;
@@ -15,8 +18,22 @@ interface TypingStats {
   errors: number;
 }
 
+interface TypingSession {
+  date: string;
+  wpm: number;
+  accuracy: number;
+  duration: number;
+  errors: number;
+  correctChars: number;
+  totalChars: number;
+}
+
 const TypingTest = () => {
   const { toast } = useToast();
+  const { achievements, newAchievements, checkAchievements, dismissAchievement } = useAchievements();
+  const [sessionHistory, setSessionHistory] = useLocalStorage<TypingSession[]>('typingHistory', []);
+  const [showAnalytics, setShowAnalytics] = useState(false);
+  
   const [text] = useState("The quick brown fox jumps over the lazy dog. This is a sample text for practicing touch typing skills. Focus on accuracy first, then build up your speed gradually.");
   const [userInput, setUserInput] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -66,7 +83,7 @@ const TypingTest = () => {
     }
 
     const accuracy = totalChars > 0 ? (correctChars / totalChars) * 100 : 100;
-    const words = correctChars / 5; // Standard: 5 characters = 1 word
+    const words = correctChars / 5;
     const minutes = timeElapsed / 60;
     const wpm = minutes > 0 ? Math.round(words / minutes) : 0;
 
@@ -78,6 +95,51 @@ const TypingTest = () => {
       totalChars,
       errors
     });
+  };
+
+  const saveSession = (finalStats: TypingStats) => {
+    const session: TypingSession = {
+      date: new Date().toISOString(),
+      wpm: finalStats.wpm,
+      accuracy: finalStats.accuracy,
+      duration: finalStats.timeElapsed,
+      errors: finalStats.errors,
+      correctChars: finalStats.correctChars,
+      totalChars: finalStats.totalChars
+    };
+
+    setSessionHistory(prev => [...prev, session]);
+
+    // Check for achievements
+    checkAchievements({
+      currentWPM: finalStats.wpm,
+      bestAccuracy: Math.max(finalStats.accuracy, ...sessionHistory.map(s => s.accuracy)),
+      practiceStreak: calculatePracticeStreak([...sessionHistory, session]),
+      lessonsCompleted: sessionHistory.length + 1,
+      totalPracticeTime: sessionHistory.reduce((acc, s) => acc + s.duration, 0) + finalStats.timeElapsed
+    });
+  };
+
+  const calculatePracticeStreak = (sessions: TypingSession[]) => {
+    if (sessions.length === 0) return 0;
+    
+    const sortedSessions = sessions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    let streak = 1;
+    let currentDate = new Date(sortedSessions[0].date);
+    
+    for (let i = 1; i < sortedSessions.length; i++) {
+      const sessionDate = new Date(sortedSessions[i].date);
+      const daysDiff = Math.floor((currentDate.getTime() - sessionDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      if (daysDiff === 1) {
+        streak++;
+        currentDate = sessionDate;
+      } else if (daysDiff > 1) {
+        break;
+      }
+    }
+    
+    return streak;
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,9 +172,11 @@ const TypingTest = () => {
 
     if (value.length >= text.length) {
       setIsActive(false);
+      const finalStats = { ...stats, timeElapsed };
+      saveSession(finalStats);
       toast({
         title: "Test Complete!",
-        description: `WPM: ${stats.wpm} | Accuracy: ${stats.accuracy}%`,
+        description: `WPM: ${finalStats.wpm} | Accuracy: ${finalStats.accuracy}%`,
       });
     }
   };
@@ -153,8 +217,8 @@ const TypingTest = () => {
       
       if (index < userInput.length) {
         className += userInput[index] === char 
-          ? 'text-green-400 bg-green-400/20' 
-          : 'text-red-400 bg-red-400/20';
+          ? 'character-correct' 
+          : 'character-incorrect';
       } else if (index === currentIndex) {
         className += 'text-white bg-blue-500 animate-pulse';
       } else {
@@ -169,17 +233,43 @@ const TypingTest = () => {
     });
   };
 
+  if (showAnalytics) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-white">Analytics Dashboard</h2>
+          <Button 
+            onClick={() => setShowAnalytics(false)}
+            className="bg-blue-500 hover:bg-blue-600"
+          >
+            Back to Test
+          </Button>
+        </div>
+        <LocalAnalytics />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
+      {/* Achievement Popups */}
+      {newAchievements.map((achievement, index) => (
+        <AchievementPopup
+          key={`${achievement.id}-${index}`}
+          achievement={achievement}
+          onClose={dismissAchievement}
+        />
+      ))}
+
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="bg-gray-950/80 border-gray-800">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
               <Zap className="w-5 h-5 text-yellow-400" />
-              <div>
-                <p className="text-sm text-gray-400">WPM</p>
-                <p className="text-2xl font-bold text-white">{stats.wpm}</p>
+              <div className="wpm-counter">
+                <p className="text-sm">WPM</p>
+                <p className="text-2xl font-bold">{stats.wpm}</p>
               </div>
             </div>
           </CardContent>
@@ -208,6 +298,18 @@ const TypingTest = () => {
             </div>
           </CardContent>
         </Card>
+
+        <Card className="bg-gray-950/80 border-gray-800">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <BarChart3 className="w-5 h-5 text-purple-400" />
+              <div>
+                <p className="text-sm text-gray-400">Sessions</p>
+                <p className="text-2xl font-bold text-white">{sessionHistory.length}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Typing Area */}
@@ -216,6 +318,14 @@ const TypingTest = () => {
           <CardTitle className="text-white flex items-center justify-between">
             Typing Test
             <div className="space-x-2">
+              <Button
+                onClick={() => setShowAnalytics(true)}
+                className="bg-purple-500 hover:bg-purple-600"
+                size="sm"
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                Analytics
+              </Button>
               <Button
                 onClick={startTest}
                 className="bg-blue-500 hover:bg-blue-600"
