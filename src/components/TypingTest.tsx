@@ -4,10 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import InteractiveKeyboard from './InteractiveKeyboard';
 import AchievementPopup from './AchievementPopup';
 import LocalAnalytics from './LocalAnalytics';
+import XPPopup from './XPPopup';
+import GameStatsBar from './GameStatsBar';
+import DailyChallenge from './DailyChallenge';
 import { Play, RotateCcw, Clock, Target, Zap, BarChart3 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAchievements } from '@/hooks/useAchievements';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useGamification } from '@/hooks/useGamification';
 
 interface TypingStats {
   wpm: number;
@@ -31,10 +35,12 @@ interface TypingSession {
 const TypingTest = () => {
   const { toast } = useToast();
   const { achievements, newAchievements, checkAchievements, dismissAchievement } = useAchievements();
+  const { gameStats, newXPGained, levelUp, awardXP, getDailyChallenge } = useGamification();
   const [sessionHistory, setSessionHistory] = useLocalStorage<TypingSession[]>('typingHistory', []);
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [isDailyChallenge, setIsDailyChallenge] = useState(false);
   
-  const [text] = useState("The quick brown fox jumps over the lazy dog. This is a sample text for practicing touch typing skills. Focus on accuracy first, then build up your speed gradually.");
+  const [text, setText] = useState("The quick brown fox jumps over the lazy dog. This is a sample text for practicing touch typing skills. Focus on accuracy first, then build up your speed gradually.");
   const [userInput, setUserInput] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isActive, setIsActive] = useState(false);
@@ -110,6 +116,9 @@ const TypingTest = () => {
 
     setSessionHistory(prev => [...prev, session]);
 
+    // Award XP based on performance
+    const xpResult = awardXP(finalStats.wpm, finalStats.accuracy, finalStats.timeElapsed, isDailyChallenge);
+
     // Check for achievements
     checkAchievements({
       currentWPM: finalStats.wpm,
@@ -118,6 +127,13 @@ const TypingTest = () => {
       lessonsCompleted: sessionHistory.length + 1,
       totalPracticeTime: sessionHistory.reduce((acc, s) => acc + s.duration, 0) + finalStats.timeElapsed
     });
+
+    if (xpResult.levelUp) {
+      toast({
+        title: "Level Up! 🎉",
+        description: `Congratulations! You've reached level ${gameStats.level + 1}!`,
+      });
+    }
   };
 
   const calculatePracticeStreak = (sessions: TypingSession[]) => {
@@ -173,12 +189,29 @@ const TypingTest = () => {
     if (value.length >= text.length) {
       setIsActive(false);
       const finalStats = { ...stats, timeElapsed };
+      
+      // Check if this completes daily challenge
+      const challenge = getDailyChallenge();
+      const completesChallenge = isDailyChallenge && (
+        (challenge.type === 'speed' && finalStats.wpm >= challenge.target) ||
+        (challenge.type === 'accuracy' && finalStats.accuracy >= challenge.target) ||
+        (challenge.type === 'numbers' && finalStats.wpm >= challenge.target)
+      );
+      
       saveSession(finalStats);
+      
       toast({
-        title: "Test Complete!",
-        description: `WPM: ${finalStats.wpm} | Accuracy: ${finalStats.accuracy}%`,
+        title: completesChallenge ? "Daily Challenge Complete! 🏆" : "Test Complete!",
+        description: `WPM: ${finalStats.wpm} | Accuracy: ${finalStats.accuracy}%${completesChallenge ? ` | +${challenge.reward} Bonus XP!` : ''}`,
       });
     }
+  };
+
+  const startDailyChallenge = () => {
+    const challenge = getDailyChallenge();
+    setText(challenge.text);
+    setIsDailyChallenge(true);
+    resetTest();
   };
 
   const resetTest = () => {
@@ -200,6 +233,7 @@ const TypingTest = () => {
   };
 
   const startTest = () => {
+    setIsDailyChallenge(false);
     resetTest();
     inputRef.current?.focus();
   };
@@ -252,7 +286,13 @@ const TypingTest = () => {
 
   return (
     <div className="space-y-6">
-      {/* Achievement Popups */}
+      {/* XP and Achievement Popups */}
+      <XPPopup 
+        xpGained={newXPGained} 
+        levelUp={levelUp} 
+        onClose={() => {}} 
+      />
+      
       {newAchievements.map((achievement, index) => (
         <AchievementPopup
           key={`${achievement.id}-${index}`}
@@ -260,6 +300,12 @@ const TypingTest = () => {
           onClose={dismissAchievement}
         />
       ))}
+
+      {/* Game Stats Bar */}
+      <GameStatsBar />
+
+      {/* Daily Challenge */}
+      <DailyChallenge />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -316,7 +362,7 @@ const TypingTest = () => {
       <Card className="bg-gray-950/80 border-gray-800">
         <CardHeader>
           <CardTitle className="text-white flex items-center justify-between">
-            Typing Test
+            {isDailyChallenge ? 'Daily Challenge' : 'Typing Test'}
             <div className="space-x-2">
               <Button
                 onClick={() => setShowAnalytics(true)}
@@ -325,6 +371,13 @@ const TypingTest = () => {
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
                 Analytics
+              </Button>
+              <Button
+                onClick={startDailyChallenge}
+                className="bg-yellow-500 hover:bg-yellow-600 text-black"
+                size="sm"
+              >
+                Daily Challenge
               </Button>
               <Button
                 onClick={startTest}

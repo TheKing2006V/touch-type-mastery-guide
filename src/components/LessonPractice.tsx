@@ -1,12 +1,13 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import InteractiveKeyboard from './InteractiveKeyboard';
+import XPPopup from './XPPopup';
 import { ArrowLeft, RotateCcw, Play, Pause, CheckCircle, Target, Clock, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useGamification } from '@/hooks/useGamification';
 
 interface LessonData {
   id: number;
@@ -30,6 +31,8 @@ interface LessonPracticeProps {
 
 const LessonPractice = ({ lesson, onComplete, onBack }: LessonPracticeProps) => {
   const { toast } = useToast();
+  const { newXPGained, levelUp, awardXP } = useGamification();
+  
   const [currentExercise, setCurrentExercise] = useState(0);
   const [userInput, setUserInput] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -134,6 +137,9 @@ const LessonPractice = ({ lesson, onComplete, onBack }: LessonPracticeProps) => 
       const finalAccuracy = Math.round((stats.correctChars / stats.totalChars) * 100);
       
       if (finalAccuracy >= lesson.targetAccuracy) {
+        // Award XP for completing exercise
+        awardXP(stats.wpm, finalAccuracy, timeElapsed);
+        
         if (currentExercise < lesson.exercises.length - 1) {
           toast({
             title: "Exercise Complete!",
@@ -141,7 +147,9 @@ const LessonPractice = ({ lesson, onComplete, onBack }: LessonPracticeProps) => 
           });
           nextExercise();
         } else {
-          // Lesson complete
+          // Lesson complete - award bonus XP
+          const bonusXP = awardXP(stats.wpm, finalAccuracy, timeElapsed);
+          
           toast({
             title: "Lesson Complete!",
             description: `Great job! WPM: ${stats.wpm}, Accuracy: ${finalAccuracy}%`,
@@ -215,6 +223,13 @@ const LessonPractice = ({ lesson, onComplete, onBack }: LessonPracticeProps) => 
 
   return (
     <div className="space-y-6">
+      {/* XP Popup */}
+      <XPPopup 
+        xpGained={newXPGained} 
+        levelUp={levelUp} 
+        onClose={() => {}} 
+      />
+      
       {/* Header */}
       <div className="flex items-center justify-between">
         <Button 
