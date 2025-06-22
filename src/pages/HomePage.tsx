@@ -3,10 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import TypingTest from '@/components/TypingTest';
+import TestimonialsSection from '@/components/TestimonialsSection';
 import { BookOpen, Trophy, TrendingUp, Target } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserProgress } from '@/hooks/useUserProgress';
+import { useEffect } from 'react';
 
 const HomePage = () => {
   const { user } = useAuth();
@@ -15,6 +17,19 @@ const HomePage = () => {
   const completedCount = user ? progress.filter(p => p.completed).length : 8;
   const totalLessons = 12;
   const progressPercentage = (completedCount / totalLessons) * 100;
+
+  // Register service worker for PWA
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('SW registered: ', registration);
+        })
+        .catch((registrationError) => {
+          console.log('SW registration failed: ', registrationError);
+        });
+    }
+  }, []);
 
   return (
     <div className="space-y-8">
@@ -150,6 +165,9 @@ const HomePage = () => {
         <h2 className="text-2xl font-bold text-white mb-6">Quick Typing Test</h2>
         <TypingTest />
       </div>
+
+      {/* Testimonials Section */}
+      <TestimonialsSection />
     </div>
   );
 };
