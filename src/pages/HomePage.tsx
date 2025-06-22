@@ -13,12 +13,13 @@ import { useEffect } from 'react';
 const HomePage = () => {
   const { user } = useAuth();
   const { progress, stats, loading } = useUserProgress();
+  const { getUnlockedCount } = useAchievements();
 
   const completedCount = user ? progress.filter(p => p.completed).length : 8;
   const totalLessons = 12;
   const progressPercentage = (completedCount / totalLessons) * 100;
+  const achievementsCount = user ? getUnlockedCount() : Math.floor(Math.random() * 3) + 2; // Show sample for guests
 
-  // Register service worker for PWA
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js')
@@ -93,7 +94,7 @@ const HomePage = () => {
           <CardContent className="p-4 text-center">
             <Trophy className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
             <p className="text-2xl font-bold text-white">
-              {user && stats ? Math.floor(stats.experience_points / 100) : 5}
+              {achievementsCount}
             </p>
             <p className="text-sm text-gray-400">Achievements</p>
           </CardContent>

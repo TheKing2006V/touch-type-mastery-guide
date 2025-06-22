@@ -7,21 +7,56 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Settings, User, Bell, Shield, Palette, Keyboard } from 'lucide-react';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 import AuthModal from '@/components/AuthModal';
+
+interface UserSettings {
+  soundEnabled: boolean;
+  showKeyboard: boolean;
+  autoAdvance: boolean;
+  darkTheme: boolean;
+  emailNotifications: boolean;
+  username: string;
+}
 
 const SettingsPage = () => {
   const { user, signOut, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   
-  // Settings state
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [showKeyboard, setShowKeyboard] = useState(true);
-  const [autoAdvance, setAutoAdvance] = useState(false);
-  const [darkTheme, setDarkTheme] = useState(true);
-  const [emailNotifications, setEmailNotifications] = useState(true);
+  // Use local storage for settings (works for both logged and non-logged users)
+  const [settings, setSettings] = useLocalStorage<UserSettings>('user_settings', {
+    soundEnabled: true,
+    showKeyboard: true,
+    autoAdvance: false,
+    darkTheme: true,
+    emailNotifications: true,
+    username: ''
+  });
+
+  // Initialize username from user data if logged in
+  useEffect(() => {
+    if (user && !settings.username) {
+      setSettings(prev => ({
+        ...prev,
+        username: user.user_metadata?.username || user.email?.split('@')[0] || ''
+      }));
+    }
+  }, [user, settings.username, setSettings]);
+
+  const handleSettingChange = (key: keyof UserSettings, value: boolean | string) => {
+    setSettings(prev => ({
+      ...prev,
+      [key]: value
+    }));
+    
+    toast({
+      title: 'Settings updated',
+      description: 'Your preferences have been saved locally.',
+    });
+  };
 
   const handleSignOut = async () => {
     try {
@@ -47,46 +82,25 @@ const SettingsPage = () => {
     );
   }
 
-  if (!user) {
-    return (
-      <>
-        <div className="space-y-8 max-w-2xl mx-auto">
-          <div className="text-center space-y-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-white">Settings</h1>
-            <p className="text-gray-300">Sign in to customize your typing experience</p>
-          </div>
-
-          <Card className="bg-gray-950/80 border-gray-800">
-            <CardContent className="p-8 text-center">
-              <Settings className="w-16 h-16 text-blue-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">Sign In Required</h3>
-              <p className="text-gray-400 mb-6">
-                Sign in to access personalized settings and preferences.
-              </p>
-              <Button 
-                onClick={() => setIsAuthModalOpen(true)}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                Sign In
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        <AuthModal 
-          isOpen={isAuthModalOpen} 
-          onClose={() => setIsAuthModalOpen(false)} 
-        />
-      </>
-    );
-  }
-
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
       {/* Header */}
       <div className="text-center space-y-4">
         <h1 className="text-3xl md:text-4xl font-bold text-white">Settings</h1>
         <p className="text-gray-300">Customize your typing experience</p>
+        
+        {!user && (
+          <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4 max-w-2xl mx-auto">
+            <p className="text-blue-300 text-sm">
+              Settings are saved locally. <button 
+                onClick={() => setIsAuthModalOpen(true)}
+                className="underline hover:text-blue-200"
+              >
+                Sign in
+              </button> to sync across devices!
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Profile Settings */}
@@ -104,26 +118,29 @@ const SettingsPage = () => {
               <Input
                 id="email"
                 type="email"
-                value={user.email || ''}
+                value={user?.email || 'Not signed in'}
                 disabled
                 className="bg-gray-800 border-gray-600 text-gray-400"
               />
             </div>
             <div>
-              <Label htmlFor="username" className="text-gray-300">Username</Label>
+              <Label htmlFor="username" className="text-gray-300">Display Name</Label>
               <Input
                 id="username"
                 type="text"
-                value={user.user_metadata?.username || user.email?.split('@')[0] || ''}
+                value={settings.username}
+                onChange={(e) => handleSettingChange('username', e.target.value)}
                 className="bg-gray-800 border-gray-600 text-white"
-                placeholder="Enter username"
+                placeholder="Enter your display name"
               />
             </div>
           </div>
           
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            Update Profile
-          </Button>
+          {user && (
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              Update Profile
+            </Button>
+          )}
         </CardContent>
       </Card>
 
@@ -142,8 +159,8 @@ const SettingsPage = () => {
               <p className="text-sm text-gray-400">Play typing sounds during practice</p>
             </div>
             <Switch
-              checked={soundEnabled}
-              onCheckedChange={setSoundEnabled}
+              checked={settings.soundEnabled}
+              onCheckedChange={(checked) => handleSettingChange('soundEnabled', checked)}
             />
           </div>
 
@@ -155,8 +172,8 @@ const SettingsPage = () => {
               <p className="text-sm text-gray-400">Display the on-screen keyboard during lessons</p>
             </div>
             <Switch
-              checked={showKeyboard}
-              onCheckedChange={setShowKeyboard}
+              checked={settings.showKeyboard}
+              onCheckedChange={(checked) => handleSettingChange('showKeyboard', checked)}
             />
           </div>
 
@@ -168,8 +185,8 @@ const SettingsPage = () => {
               <p className="text-sm text-gray-400">Automatically move to the next lesson after completion</p>
             </div>
             <Switch
-              checked={autoAdvance}
-              onCheckedChange={setAutoAdvance}
+              checked={settings.autoAdvance}
+              onCheckedChange={(checked) => handleSettingChange('autoAdvance', checked)}
             />
           </div>
         </CardContent>
@@ -190,8 +207,8 @@ const SettingsPage = () => {
               <p className="text-sm text-gray-400">Use dark mode for the interface</p>
             </div>
             <Switch
-              checked={darkTheme}
-              onCheckedChange={setDarkTheme}
+              checked={settings.darkTheme}
+              onCheckedChange={(checked) => handleSettingChange('darkTheme', checked)}
             />
           </div>
         </CardContent>
@@ -209,11 +226,14 @@ const SettingsPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <Label className="text-white">Email Notifications</Label>
-              <p className="text-sm text-gray-400">Receive progress updates and achievements via email</p>
+              <p className="text-sm text-gray-400">
+                {user ? 'Receive progress updates and achievements via email' : 'Sign in to enable email notifications'}
+              </p>
             </div>
             <Switch
-              checked={emailNotifications}
-              onCheckedChange={setEmailNotifications}
+              checked={settings.emailNotifications}
+              onCheckedChange={(checked) => handleSettingChange('emailNotifications', checked)}
+              disabled={!user}
             />
           </div>
         </CardContent>
@@ -228,32 +248,56 @@ const SettingsPage = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <Label className="text-white">Sign Out</Label>
-              <p className="text-sm text-gray-400">Sign out of your account</p>
+          {user ? (
+            <>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-white">Sign Out</Label>
+                  <p className="text-sm text-gray-400">Sign out of your account</p>
+                </div>
+                <Button 
+                  onClick={handleSignOut}
+                  variant="outline"
+                  className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                >
+                  Sign Out
+                </Button>
+              </div>
+
+              <Separator className="bg-gray-700" />
+
+              <div className="text-center py-4">
+                <p className="text-sm text-gray-400 mb-4">
+                  Need help or want to delete your account?
+                </p>
+                <Button variant="ghost" className="text-gray-400 hover:text-white">
+                  Contact Support
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-4">
+              <div className="mb-4">
+                <Label className="text-white text-lg">Create Account</Label>
+                <p className="text-sm text-gray-400 mt-2">
+                  Sign up to sync settings across devices and track your progress
+                </p>
+              </div>
+              <Button 
+                onClick={() => setIsAuthModalOpen(true)}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                Sign In / Sign Up
+              </Button>
             </div>
-            <Button 
-              onClick={handleSignOut}
-              variant="outline"
-              className="border-red-500/50 text-red-400 hover:bg-red-500/10"
-            >
-              Sign Out
-            </Button>
-          </div>
-
-          <Separator className="bg-gray-700" />
-
-          <div className="text-center py-4">
-            <p className="text-sm text-gray-400 mb-4">
-              Need help or want to delete your account?
-            </p>
-            <Button variant="ghost" className="text-gray-400 hover:text-white">
-              Contact Support
-            </Button>
-          </div>
+          )}
         </CardContent>
       </Card>
+
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+      />
     </div>
   );
 };

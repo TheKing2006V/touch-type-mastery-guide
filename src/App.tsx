@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Navigation from "./components/Navigation";
 import HomePage from "./pages/HomePage";
 import LessonsPage from "./pages/LessonsPage";
+import AchievementsPage from "./pages/AchievementsPage";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
@@ -36,7 +37,7 @@ const App = () => {
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/lessons" element={<LessonsPage />} />
-                  <Route path="/achievements" element={<div className="text-white text-center py-12">Achievements page coming soon!</div>} />
+                  <Route path="/achievements" element={<AchievementsPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                   <Route path="*" element={<NotFound />} />

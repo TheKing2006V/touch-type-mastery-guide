@@ -1,19 +1,36 @@
-
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserProgress } from '@/hooks/useUserProgress';
+import { useAchievements } from '@/hooks/useAchievements';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { User, Mail, Calendar, Trophy, Target, TrendingUp, Clock } from 'lucide-react';
+import { User, Mail, Calendar, Trophy, Target, TrendingUp, Clock, Star } from 'lucide-react';
 import AuthModal from '@/components/AuthModal';
 import { useState } from 'react';
 
 const ProfilePage = () => {
   const { user, loading: authLoading } = useAuth();
   const { progress, stats, loading } = useUserProgress();
+  const { getUnlockedCount } = useAchievements();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  
+  // Local storage for guest users
+  const [guestProfile] = useLocalStorage('guest_profile', {
+    displayName: 'Guest User',
+    level: 1,
+    xp: 0,
+    joinDate: new Date().toISOString()
+  });
+
+  const [guestStats] = useLocalStorage('guest_typing_stats', {
+    bestWPM: 0,
+    bestAccuracy: 0,
+    totalPracticeTime: 0,
+    lessonsCompleted: 0
+  });
 
   if (authLoading) {
     return (
@@ -23,27 +40,119 @@ const ProfilePage = () => {
     );
   }
 
+  const completedLessons = user ? progress.filter(p => p.completed).length : guestStats.lessonsCompleted;
+  const totalLessons = 12; // Based on lesson data
+  const progressPercentage = (completedLessons / totalLessons) * 100;
+  const currentLevel = user ? (stats?.current_level || 1) : guestProfile.level;
+  const currentXP = user ? (stats?.experience_points || 0) : guestProfile.xp;
+  const achievementsCount = user ? getUnlockedCount() : 0;
+
   if (!user) {
     return (
       <>
-        <div className="space-y-8 max-w-2xl mx-auto">
+        <div className="space-y-8 max-w-4xl mx-auto">
+          {/* Guest Profile View */}
           <div className="text-center space-y-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-white">Profile</h1>
-            <p className="text-gray-300">Sign in to view your typing profile and progress</p>
+            <h1 className="text-3xl md:text-4xl font-bold text-white">Your Profile</h1>
+            <p className="text-gray-300">Track your typing progress and achievements</p>
+            
+            <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4 max-w-2xl mx-auto">
+              <p className="text-blue-300 text-sm">
+                You're viewing as a guest. <button 
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="underline hover:text-blue-200"
+                >
+                  Sign in
+                </button> to save your progress and unlock more features!
+              </p>
+            </div>
           </div>
 
+          {/* Guest Profile Info */}
           <Card className="bg-gray-950/80 border-gray-800">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <Avatar className="w-20 h-20">
+                  <AvatarFallback className="bg-gray-600 text-white text-xl">
+                    G
+                  </AvatarFallback>
+                </Avatar>
+                
+                <div className="flex-1">
+                  <h2 className="text-2xl font-bold text-white">
+                    {guestProfile.displayName}
+                  </h2>
+                  <div className="flex items-center space-x-2 text-gray-400 mt-1">
+                    <Star className="w-4 h-4" />
+                    <span>Guest User</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-gray-400 mt-1">
+                    <Calendar className="w-4 h-4" />
+                    <span>Browsing since today</span>
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <Badge className="bg-gray-500/20 text-gray-400 border-gray-500/30 mb-2">
+                    Guest Level {currentLevel}
+                  </Badge>
+                  <div className="text-sm text-gray-400">
+                    {currentXP} XP
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Guest Stats Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card className="bg-gray-950/80 border-gray-800">
+              <CardContent className="p-4 text-center">
+                <TrendingUp className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-white">{guestStats.bestWPM}</p>
+                <p className="text-sm text-gray-400">Best Speed</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-gray-950/80 border-gray-800">
+              <CardContent className="p-4 text-center">
+                <Target className="w-8 h-8 text-green-400 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-white">{guestStats.bestAccuracy}%</p>
+                <p className="text-sm text-gray-400">Best Accuracy</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-gray-950/80 border-gray-800">
+              <CardContent className="p-4 text-center">
+                <Trophy className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-white">{completedLessons}</p>
+                <p className="text-sm text-gray-400">Lessons Done</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-gray-950/80 border-gray-800">
+              <CardContent className="p-4 text-center">
+                <Clock className="w-8 h-8 text-purple-400 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-white">{Math.round(guestStats.totalPracticeTime / 60)}</p>
+                <p className="text-sm text-gray-400">Minutes Typed</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Encouragement to Sign Up */}
+          <Card className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-blue-500/30">
             <CardContent className="p-8 text-center">
-              <User className="w-16 h-16 text-blue-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">Sign In Required</h3>
-              <p className="text-gray-400 mb-6">
-                Create an account to track your progress, earn achievements, and compete with friends.
+              <Trophy className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-white mb-2">Unlock Your Full Potential</h3>
+              <p className="text-gray-300 mb-6">
+                Sign up to save your progress, earn achievements, compete with friends, and access advanced features.
               </p>
               <Button 
                 onClick={() => setIsAuthModalOpen(true)}
                 className="bg-blue-600 hover:bg-blue-700"
+                size="lg"
               >
-                Sign In
+                Sign Up Now
               </Button>
             </CardContent>
           </Card>

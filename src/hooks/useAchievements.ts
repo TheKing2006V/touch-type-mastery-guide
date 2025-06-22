@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 interface Achievement {
   id: string;
@@ -20,7 +21,8 @@ interface AchievementProgress {
 
 export const useAchievements = () => {
   const { user } = useAuth();
-  const [achievements, setAchievements] = useState<Achievement[]>([
+  
+  const defaultAchievements = [
     { id: 'first_30wpm', name: 'Speed Starter', desc: 'Reach 30 WPM', unlocked: false },
     { id: 'accuracy_95', name: 'Precision Master', desc: '95% accuracy', unlocked: false },
     { id: 'practice_7days', name: 'Consistent Learner', desc: '7 days streak', unlocked: false },
@@ -29,22 +31,22 @@ export const useAchievements = () => {
     { id: 'perfect_score', name: 'Perfectionist', desc: '100% accuracy', unlocked: false },
     { id: 'marathon', name: 'Marathon Typist', desc: '60 minutes practice', unlocked: false },
     { id: 'lesson_master', name: 'Lesson Master', desc: 'Complete 25 lessons', unlocked: false }
-  ]);
-  
+  ];
+
+  // Use different storage keys for logged in vs guest users
+  const storageKey = user ? `achievements_${user.id}` : 'guest_achievements';
+  const [achievements, setAchievements] = useLocalStorage<Achievement[]>(storageKey, defaultAchievements);
   const [newAchievements, setNewAchievements] = useState<Achievement[]>([]);
 
-  // Load achievements from localStorage
+  // Reset achievements when switching between guest and authenticated
   useEffect(() => {
-    const savedAchievements = localStorage.getItem(`achievements_${user?.id || 'guest'}`);
-    if (savedAchievements) {
-      setAchievements(JSON.parse(savedAchievements));
+    const currentStorageKey = user ? `achievements_${user.id}` : 'guest_achievements';
+    const savedAchievements = localStorage.getItem(currentStorageKey);
+    
+    if (!savedAchievements) {
+      setAchievements(defaultAchievements);
     }
-  }, [user]);
-
-  // Save achievements to localStorage
-  useEffect(() => {
-    localStorage.setItem(`achievements_${user?.id || 'guest'}`, JSON.stringify(achievements));
-  }, [achievements, user]);
+  }, [user, setAchievements]);
 
   const checkAchievements = (progress: AchievementProgress) => {
     const newlyUnlocked: Achievement[] = [];
