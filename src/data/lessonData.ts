@@ -221,5 +221,344 @@ export const lessonData: LessonData[] = [
     ],
     targetAccuracy: 78,
     targetWPM: 45
+  },
+  // New lessons start here
+  {
+    id: 9,
+    title: "JavaScript Fundamentals",
+    description: "Practice typing common JavaScript syntax and patterns",
+    difficulty: 'Intermediate',
+    duration: "30 min",
+    exercises: [
+      {
+        instruction: "Practice JavaScript function syntax. Focus on parentheses, braces, and parameter naming.",
+        text: "function calculateWPM(characters, timeInMinutes) { return Math.round(characters / 5 / timeInMinutes); }",
+        focusKeys: ['(', ')', '{', '}', ',', ';', '/', '*']
+      },
+      {
+        instruction: "Type variable declarations and arrow functions. Pay attention to const, let, and => syntax.",
+        text: "const userName = 'john_doe'; let userAge = 25; const getUser = (id) => { return users.find(u => u.id === id); };",
+        focusKeys: ['=', '>', '(', ')', '{', '}', ';', "'"]
+      },
+      {
+        instruction: "Practice JavaScript control structures with proper indentation and syntax.",
+        text: "if (user.isActive && user.age >= 18) { console.log('User is eligible'); } else { console.log('Access denied'); }",
+        focusKeys: ['&', '>', '=', '(', ')', '{', '}', ';']
+      }
+    ],
+    targetAccuracy: 80,
+    targetWPM: 35
+  },
+  {
+    id: 10,
+    title: "Medical Terminology",
+    description: "Healthcare-focused typing practice with medical terms",
+    difficulty: 'Advanced',
+    duration: "35 min",
+    exercises: [
+      {
+        instruction: "Practice common medical terms. Focus on complex spellings and medical abbreviations.",
+        text: "diagnose symptoms treatment prescription rehabilitation therapy cardiovascular respiratory",
+        focusKeys: []
+      },
+      {
+        instruction: "Type medical procedures and conditions with proper capitalization.",
+        text: "Patient presents with acute myocardial infarction. Recommend immediate EKG and cardiac enzymes. Administer nitroglycerin PRN chest pain.",
+        focusKeys: ['.']
+      },
+      {
+        instruction: "Practice medical documentation format with abbreviations and measurements.",
+        text: "BP: 140/90 mmHg, HR: 88 bpm, Temp: 98.6°F, O2 Sat: 97% on room air. Rx: Lisinopril 10mg PO daily x 30 days.",
+        focusKeys: [':', '/', '%', '°']
+      }
+    ],
+    targetAccuracy: 75,
+    targetWPM: 40
+  },
+  {
+    id: 11,
+    title: "Legal Documents",
+    description: "Practice typing legal terminology and formal document structure",
+    difficulty: 'Advanced',
+    duration: "40 min",
+    exercises: [
+      {
+        instruction: "Practice legal terminology and formal language structure.",
+        text: "plaintiff defendant litigation jurisdiction precedent statute regulation compliance",
+        focusKeys: []
+      },
+      {
+        instruction: "Type formal legal clauses with proper punctuation and capitalization.",
+        text: "WHEREAS, the Party of the First Part agrees to provide services as outlined in Exhibit A; and WHEREAS, the Party of the Second Part agrees to compensate according to Schedule B;",
+        focusKeys: [',', ';', ':']
+      },
+      {
+        instruction: "Practice contract language with technical legal phrases.",
+        text: "This Agreement shall be governed by and construed in accordance with the laws of the State of California, without regard to its conflict of laws principles.",
+        focusKeys: [',', '.']
+      }
+    ],
+    targetAccuracy: 78,
+    targetWPM: 38
+  },
+  {
+    id: 12,
+    title: "Financial Reports",
+    description: "Practice typing financial data, numbers, and business terminology",
+    difficulty: 'Intermediate',
+    duration: "25 min",
+    exercises: [
+      {
+        instruction: "Practice financial terminology and business language.",
+        text: "revenue profit margin assets liabilities equity depreciation amortization cash flow",
+        focusKeys: []
+      },
+      {
+        instruction: "Type financial data with numbers, percentages, and currency symbols.",
+        text: "Q3 revenue increased 15.7% to $2,450,000. Operating margin improved from 12.3% to 14.8%. EBITDA of $425,000 exceeded projections.",
+        focusKeys: ['%', '$', ',', '.']
+      },
+      {
+        instruction: "Practice typing financial statements and accounting entries.",
+        text: "Debit: Cash $10,000; Credit: Accounts Receivable $10,000. Net Income for FY2023: $1,250,000 (up 8.2% YoY).",
+        focusKeys: [':', '$', ',', '(', ')', '%']
+      }
+    ],
+    targetAccuracy: 82,
+    targetWPM: 42
+  },
+  {
+    id: 13,
+    title: "Scientific Research",
+    description: "Practice typing scientific terminology and research documentation",
+    difficulty: 'Advanced',
+    duration: "38 min",
+    exercises: [
+      {
+        instruction: "Practice scientific terminology and research vocabulary.",
+        text: "hypothesis methodology analysis correlation coefficient statistical significance p-value regression",
+        focusKeys: ['-']
+      },
+      {
+        instruction: "Type scientific measurements and chemical formulas with proper notation.",
+        text: "The concentration of NaCl was 0.9% (w/v). Temperature maintained at 37°C ± 2°C. pH measured at 7.4 using calibrated electrode.",
+        focusKeys: ['%', '(', ')', '°', '±']
+      },
+      {
+        instruction: "Practice academic citation format and research methodology descriptions.",
+        text: "According to Smith et al. (2023), the treatment group (n=150) showed significant improvement (p<0.05) compared to control group (n=145).",
+        focusKeys: ['(', ')', '=', '<', '.']
+      }
+    ],
+    targetAccuracy: 76,
+    targetWPM: 36
+  },
+  {
+    id: 14,
+    title: "Creative Writing",
+    description: "Practice typing creative content with varied vocabulary and style",
+    difficulty: 'Intermediate',
+    duration: "30 min",
+    exercises: [
+      {
+        instruction: "Practice descriptive vocabulary and creative language patterns.",
+        text: "magnificent ethereal whimsical melancholy serendipity luminous tranquil mysterious enchanting sublime",
+        focusKeys: []
+      },
+      {
+        instruction: "Type narrative prose with dialogue and varied punctuation.",
+        text: "\"The storm approaches,\" she whispered, her voice barely audible above the howling wind. Lightning illuminated the darkened sky—a spectacle both terrifying and beautiful.",
+        focusKeys: ['"', ',', "'", '—', '.']
+      },
+      {
+        instruction: "Practice poetic language with metaphors and literary devices.",
+        text: "Time flows like a river through the valleys of memory, carrying with it fragments of dreams and whispers of forgotten melodies that dance in the twilight of consciousness.",
+        focusKeys: [',', '.']
+      }
+    ],
+    targetAccuracy: 85,
+    targetWPM: 40
+  },
+  {
+    id: 15,
+    title: "Technical Documentation",
+    description: "Practice typing technical manuals and software documentation",
+    difficulty: 'Advanced',
+    duration: "35 min",
+    exercises: [
+      {
+        instruction: "Practice technical vocabulary and documentation terminology.",
+        text: "configuration implementation deployment authentication authorization middleware API endpoint database",
+        focusKeys: []
+      },
+      {
+        instruction: "Type API documentation with code examples and parameter descriptions.",
+        text: "GET /api/users/{id} - Returns user object. Parameters: id (integer, required). Response: 200 OK with user data, 404 if not found.",
+        focusKeys: ['/', '{', '}', ':', '(', ')', ',']
+      },
+      {
+        instruction: "Practice troubleshooting guides with step-by-step instructions.",
+        text: "1. Check network connectivity using ping command. 2. Verify firewall settings allow port 443. 3. Restart the service: sudo systemctl restart nginx",
+        focusKeys: ['1', '2', '3', '.', ':']
+      }
+    ],
+    targetAccuracy: 78,
+    targetWPM: 38
+  },
+  {
+    id: 16,
+    title: "Email Communications",
+    description: "Practice typing professional emails and business correspondence",
+    difficulty: 'Beginner',
+    duration: "20 min",
+    exercises: [
+      {
+        instruction: "Practice professional email vocabulary and common phrases.",
+        text: "regarding regarding following attached please find enclosed sincerely best regards thank you",
+        focusKeys: []
+      },
+      {
+        instruction: "Type professional email greetings and closings with proper formatting.",
+        text: "Dear Mr. Johnson, I hope this email finds you well. Please find the requested documents attached. Best regards, Sarah Smith",
+        focusKeys: [',', '.']
+      },
+      {
+        instruction: "Practice email addresses and contact information formatting.",
+        text: "Contact: john.doe@company.com | Phone: (555) 123-4567 | Website: www.example.com | Office: Suite 200, 123 Main St.",
+        focusKeys: ['@', '.', '|', '(', ')', '-', ',']
+      }
+    ],
+    targetAccuracy: 88,
+    targetWPM: 30
+  },
+  {
+    id: 17,
+    title: "Data Entry Practice",
+    description: "Practice typing structured data, forms, and database entries",
+    difficulty: 'Intermediate',
+    duration: "25 min",
+    exercises: [
+      {
+        instruction: "Practice typing structured data with consistent formatting.",
+        text: "Name: John Smith | Age: 32 | City: New York | ZIP: 10001 | Phone: 555-0123",
+        focusKeys: [':', '|', '-']
+      },
+      {
+        instruction: "Type tabular data with proper alignment and separators.",
+        text: "ID: 001 | Product: Laptop | Price: $999.99 | Qty: 15 | Status: In Stock | Category: Electronics",
+        focusKeys: [':', '|', '$', '.']
+      },
+      {
+        instruction: "Practice database-style entries with multiple field types.",
+        text: "User_ID: U12345 | Email: user@domain.com | Created: 2023-12-15 | Active: TRUE | Role: Admin | Last_Login: 2023-12-22 09:30:15",
+        focusKeys: ['_', ':', '@', '-', ':']
+      }
+    ],
+    targetAccuracy: 85,
+    targetWPM: 45
+  },
+  {
+    id: 18,
+    title: "Social Media Content",
+    description: "Practice typing social media posts with hashtags and mentions",
+    difficulty: 'Beginner',
+    duration: "18 min",
+    exercises: [
+      {
+        instruction: "Practice social media vocabulary and common abbreviations.",
+        text: "awesome amazing incredible fantastic wonderful brilliant excellent outstanding phenomenal spectacular",
+        focusKeys: []
+      },
+      {
+        instruction: "Type social media posts with hashtags and mentions.",
+        text: "Just finished an amazing workout! 💪 #fitness #motivation #healthylifestyle Thanks @my_trainer for the inspiration!",
+        focusKeys: ['#', '@', '!', '💪']
+      },
+      {
+        instruction: "Practice typing tweets with character limits and engagement phrases.",
+        text: "Excited to share our latest project! What do you think? Let me know in the comments below! 🚀 #innovation #tech #startup",
+        focusKeys: ['!', '?', '#', '🚀']
+      }
+    ],
+    targetAccuracy: 90,
+    targetWPM: 35
+  },
+  {
+    id: 19,
+    title: "Academic Essays",
+    description: "Practice typing academic writing with citations and formal structure",
+    difficulty: 'Advanced',
+    duration: "42 min",
+    exercises: [
+      {
+        instruction: "Practice academic vocabulary and formal writing terminology.",
+        text: "furthermore however nevertheless consequently therefore moreover alternatively specifically ultimately",
+        focusKeys: []
+      },
+      {
+        instruction: "Type academic citations in APA format with proper punctuation.",
+        text: "According to Johnson (2023), climate change affects global precipitation patterns (p. 145). This finding supports earlier research by Smith and Brown (2022).",
+        focusKeys: ['(', ')', ',', '.']
+      },
+      {
+        instruction: "Practice thesis statements and academic argumentation structure.",
+        text: "This paper argues that renewable energy adoption, while initially costly, provides long-term economic benefits that outweigh traditional fossil fuel investments in developing nations.",
+        focusKeys: [',', '.']
+      }
+    ],
+    targetAccuracy: 80,
+    targetWPM: 38
+  },
+  {
+    id: 20,
+    title: "Gaming & Entertainment",
+    description: "Practice typing gaming terminology and entertainment content",
+    difficulty: 'Beginner',
+    duration: "22 min",
+    exercises: [
+      {
+        instruction: "Practice gaming vocabulary and common gaming terms.",
+        text: "achievement unlocked respawn checkpoint inventory upgrade multiplayer campaign leaderboard strategy",
+        focusKeys: []
+      },
+      {
+        instruction: "Type gaming chat messages and common gaming expressions.",
+        text: "GG everyone! That was an epic match! Who's ready for another round? My K/D ratio is improving! 🎮",
+        focusKeys: ['!', '?', '/', '🎮']
+      },
+      {
+        instruction: "Practice typing game reviews and entertainment commentary.",
+        text: "This game features stunning graphics, immersive gameplay, and an engaging storyline. Rating: 9/10. Highly recommended for RPG fans!",
+        focusKeys: [',', '.', ':', '/', '!']
+      }
+    ],
+    targetAccuracy: 88,
+    targetWPM: 40
+  },
+  {
+    id: 21,
+    title: "Foreign Language Practice",
+    description: "Practice typing common foreign words and international content",
+    difficulty: 'Intermediate',
+    duration: "28 min",
+    exercises: [
+      {
+        instruction: "Practice common foreign words used in English writing.",
+        text: "café résumé naïve façade fiancé cliché déjà vu bon voyage c'est la vie",
+        focusKeys: ['é', 'ç', 'à', 'ï', "'"]
+      },
+      {
+        instruction: "Type international greetings and common phrases from various languages.",
+        text: "Hola! Bonjour! Guten Tag! Konnichiwa! Namaste! Zdravstvuyte! Shalom! Marhaba! Ciao! Hej!",
+        focusKeys: ['!']
+      },
+      {
+        instruction: "Practice typing multilingual content with special characters.",
+        text: "The café serves crêpes and café au lait. Señor García speaks português fluently. The piñata was filled with dulces.",
+        focusKeys: ['é', 'ê', 'ç', 'ñ', 'ü']
+      }
+    ],
+    targetAccuracy: 82,
+    targetWPM: 32
   }
 ];
