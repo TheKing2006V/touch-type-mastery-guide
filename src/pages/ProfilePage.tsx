@@ -166,10 +166,6 @@ const ProfilePage = () => {
     );
   }
 
-  const completedLessons = progress.filter(p => p.completed).length;
-  const totalLessons = 12; // Based on lesson data
-  const progressPercentage = (completedLessons / totalLessons) * 100;
-
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
       {/* Header */}
